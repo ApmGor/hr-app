@@ -19,6 +19,7 @@ public class CandidateRouter {
     public RouterFunction<ServerResponse> routerFunction() {
         return RouterFunctions.route()
                 .path("/candidates", builder -> builder
+                        .GET("/test", handler::hostChangeLB)
                         .GET("/{" + ID + "}", handler::handleOne)
                         .GET(handler::handleAll)
                         .POST(handler::handleSave)
