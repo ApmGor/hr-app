@@ -1,0 +1,20 @@
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./src/integrationTest/resources/data:/docker-entrypoint-initdb.d
+  app:
+    build:
+      context: ..
+      dockerfile: job.Dockerfile
+    image: job-service
+    depends_on:
+      - mongo
+    profiles:
+      - app
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./env/app.env
