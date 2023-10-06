@@ -1,0 +1,28 @@
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - "./src/integrationTest/resources/data:/docker-entrypoint-initdb.d"
+  job-mock:
+    image: mockserver/mockserver
+    ports:
+      - "8082:1080"
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: "/config/init.json"
+    volumes:
+      - "./src/integrationTest/resources/data/job-init.json:/config/init.json"
+  app:
+    build:
+      context: ..
+      dockerfile: candidate.Dockerfile
+    image: candidate-service
+    depends_on:
+      - mongo
+    env_file:
+      - "./env/app.env"
+    profiles:
+      - app
+    ports:
+      - "8080:8080"
