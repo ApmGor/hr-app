@@ -10,4 +10,5 @@ dependencyResolutionManagement {
 }
 
 include("job-service")
+include("candidate-service")
 
