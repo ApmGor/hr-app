@@ -1,15 +1,18 @@
 package ru.apmgor.jobservice.router;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.reactivestreams.Publisher;
 import org.springframework.http.CacheControl;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import ru.apmgor.jobservice.dto.JobDto;
 import ru.apmgor.jobservice.service.JobService;
 
+import java.net.InetAddress;
 import java.net.URI;
 import java.time.Duration;
 import java.util.HashSet;
@@ -36,6 +39,13 @@ public final class JobHandler {
         return service.save(request.bodyToMono(JobDto.class))
                 .map(id -> URI.create(request.path() + "/" + id))
                 .flatMap(uri -> created(uri).build());
+    }
+
+    @SneakyThrows
+    public Mono<ServerResponse> hostChangeLB(final ServerRequest request) {
+        return ok()
+                .bodyValue(InetAddress.getLocalHost().getHostName())
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     private Mono<ServerResponse> response(final Publisher<JobDto> publisher) {

@@ -17,6 +17,7 @@ public class JobRouter {
     public RouterFunction<ServerResponse> router() {
         return RouterFunctions.route()
                 .path("/jobs", builder -> builder
+                        .GET("/test", handler::hostChangeLB)
                         .GET(handler::getJobs)
                         .POST(handler::saveJob)
                         .build())
