@@ -20,4 +20,6 @@ WORKDIR /app
 
 COPY --from=BUILDER /build/job-service/build/libs/*.jar app.jar
 
+EXPOSE 8080
+
 CMD ["java", "-jar", "app.jar"]

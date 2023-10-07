@@ -22,6 +22,8 @@ services:
       - mongo
     env_file:
       - "./env/app.env"
+    environment:
+      JOB_SERVICE_URL: "http://job-mock:1080"
     profiles:
       - app
     ports:
