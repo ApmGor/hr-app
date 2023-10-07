@@ -1,0 +1,43 @@
+services:
+  mongo-job:
+    image: mongo
+    volumes:
+      - "./job-service/src/integrationTest/resources/data:/docker-entrypoint-initdb.d"
+  mongo-candidate:
+    image: mongo
+    volumes:
+      - "./candidate-service/src/integrationTest/resources/data:/docker-entrypoint-initdb.d"
+  job-service:
+    build:
+      context: .
+      dockerfile: job.Dockerfile
+    image: job-service
+    deploy:
+      replicas: 2
+    depends_on:
+      - mongo-job
+    env_file:
+      - "./job-service/env/app.env"
+  candidate-service:
+    build:
+      context: .
+      dockerfile: candidate.Dockerfile
+    image: candidate-service
+    deploy:
+      replicas: 2
+    depends_on:
+      - mongo-candidate
+      - job-service
+    env_file:
+      - "./candidate-service/env/app.env"
+    environment:
+      JOB_SERVICE_URL: "http://job-service:8080/jobs"
+  api-gateway:
+    image: nginx
+    depends_on:
+      - candidate-service
+      - job-service
+    ports:
+      - "80:80"
+    volumes:
+      - "./api-gateway/conf/nginx.conf:/etc/nginx/nginx.conf:ro"
