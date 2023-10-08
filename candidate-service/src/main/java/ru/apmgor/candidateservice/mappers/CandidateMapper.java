@@ -6,7 +6,7 @@ import ru.apmgor.candidateservice.dto.CandidateDetailsDto;
 import ru.apmgor.candidateservice.dto.CandidateDto;
 import ru.apmgor.candidateservice.entity.Candidate;
 
-public final class CandidateMapper {
+public class CandidateMapper {
     private CandidateMapper() {}
 
     public static CandidateDto toDto(final Candidate candidate) {
